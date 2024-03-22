@@ -6,20 +6,18 @@ public class PlayerMovement : MonoBehaviour
 {
     public float speed = 1f;
     public float jumpForce = 3f;
-    
     private Rigidbody2D rb;
-   
     private SpriteRenderer spriteRenderer;
-    void Start()
+    int groundLayer;
+    private Animator animator;
+      void Start()
     {
         // Ambil komponen rigidbody dari objek player
         rb = GetComponent<Rigidbody2D>();
-
+        animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        animator= GetComponent<Animator>();
     }
-
-
-		//sprite flip ini berguna untuk mengubah hadapan player
     private void SpriteFlip(float horizontalInput)
     {
         if (horizontalInput < 0) 
@@ -32,9 +30,19 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
-
-    void FixedUpdate()
+    #region AnimationHandler
+    
+    private void PlayWalk()
+    {
+        animator.SetTrigger("goWalk");
+    }
+    private void PlayJump()
+    {
+        animator.SetTrigger("goJump");
+    }
+    #endregion
+ 
+        void FixedUpdate()
     {
         // Menggerakan player ke kanan atau kiri menggunakan transform.translate
         float horizontalInput = Input.GetAxis("Horizontal");
@@ -46,7 +54,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && Mathf.Abs(rb.velocity.y) < 0.001f)
         {
             rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
-
+            PlayJump();
         }
     }
 }
